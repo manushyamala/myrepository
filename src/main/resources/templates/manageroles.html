@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" th:attr="dir=${#locale.language}=='ar' ? 'rtl' : 'ltr'">
+<head th:replace="fragments/header">
+</head>
+<body>
+	<div th:replace="fragments/staticmenu :: staticmenu"
+		class="container-fluid"></div>
+
+	<div class="container">
+		<div id="errorDiv"></div>
+		<div id="manageroles-form-load-div"
+			th:fragment="manageroles-form-load-frag">
+			<div id="manageroles-form-data-div">
+				<form class="form-horizontal" role="form"
+					id="managerole-search-form" th:object="${selectedRoleObj}"
+					method="post">
+					<div class="um-search-form">
+						<div class="form-group up-form-group">
+							<label for="Role-Name" class="col-sm-2 control-label" th:text="#{user.rolename}">Role
+								Name</label> <input type="text" th:field="*{roleName}"
+								class="form-control" id="roleName" th:attr="placeholder=#{user.rolename}" />
+						</div>
+						<div class="form-group up-form-group">
+							<label for="Description-En" class="col-sm-2 control-label" th:text="#{user.roledescen}">Description(EN)
+							</label> <input type="text" th:field="*{descriptionEn}"
+								class="form-control" id="descriptionEn"
+								th:attr="placeholder=#{user.roledescen}" />
+						</div>
+						<div class="form-group up-form-group">
+							<label for="Description-Ar" class="col-sm-2 control-label" th:text="#{user.roledescar}">Description(AR)</label>
+							<input type="text" th:field="*{descriptionAr}"
+								class="form-control" id="descriptionAr"
+								th:attr="placeholder=#{user.roledescen}"/>
+						</div>
+
+						<div class="form-group up-form-group">
+							<label for="Remarks" class="col-sm-2 control-label" th:text="#{user.roleremarks}">Remarks</label>
+							<input type="text" th:field="*{remarks}" class="form-control"
+								id="remarks" th:attr="placeholder=#{user.roleremarks}"/> <input type="hidden"
+								id="selectedRoleID" th:value="${selectedRoleObj.selectedRoleID}" />
+
+						</div>
+						<div class="form-group up-form-group">
+							<label for="Department" class="col-sm-2 control-label" th:text="#{user.roledepartment}">Department</label>
+							<select class="form-control" id="departmentID">
+								<option th:if="${selectedRoleObj.departmentID == 0}" value="0" th:text="#{user.chooseroledepartment}">Choose
+									Department</option>
+								<option th:if="${selectedRoleObj.departmentID != 0}"
+									th:value="${selectedRoleObj.departmentID}"
+									th:text="#{user.chooseroledepartment}">Choose
+									Department</option>
+								<option th:each="departmentDTO : ${departmentlLookupDTOList}"
+									th:value="${departmentDTO.id}"
+									th:text="${departmentDTO.descEnglish}"></option>
+							</select>
+						</div>
+
+						<div class="form-group up-form-group">
+							<label for="Remarks" class="col-sm-2 control-label" style="text-align: center" th:text="#{user.roleactive}">Active</label>
+							<input type="checkbox" name="active" th:attr="style=${#locale.language}=='ar'? 'width: 93%' : 'width: 86%'" th:checked="*{active}" />
+
+						</div>
+						
+						<div id="errorDivParent" class="row" th:if="${ errorResponseDesc != null}" >
+							<div class="linebreaker-lg"></div>
+							<div class="linebreaker-lg"></div>		
+							<div class="col-md-12" style="text-align: center;">	
+								<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+									 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+									 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+									<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+									</span> </strong>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10"></div>
+						</div>
+						
+
+					</div>
+
+					<div class="linebreaker-lg"></div>
+					<div class="linebreaker-lg"></div>
+					
+					<div id="manageroles-privilege-list"
+						th:fragment="manageroles-privilege-list-frag">
+
+						<div id="manageroles-privilege-list-result"
+							th:if="${not #lists.isEmpty(allPivilegeListDTO)}">
+								<table class="table table-fixed">
+									<thead>
+										<tr style="width:103.1%">
+											<th th:text="#{user.assignprivilegedesc}" style="font-size: 14px;" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'"><strong>
+												Click Select Privilege Checkbox to assign a privilege </strong></th>	
+										</tr>
+										<tr style="width:103.1%">
+											<th th:attr="style=${#locale.language}=='ar'? 'float:right;font-size: 15px': 'float:left;font-size: 15px',
+												class=${#locale.language}=='ar'? 'bg-primary col-xs-10 text-right':'bg-primary col-xs-10 text-left'" th:text="#{user.assignprivilegestorole}"><strong>
+												Privilege</strong>
+											</th>
+											<th th:attr="style=${#locale.language}=='ar'? 'float:right;font-size: 15px': 'float:left;font-size: 15px',
+												class=${#locale.language}=='ar'? 'bg-primary col-xs-2 text-center':'bg-primary col-xs-2 text-center'" th:text="#{user.selectroleprivlege}" ><strong>
+												Select Privilege</strong>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="privilegeDTO : ${allPivilegeListDTO}"
+											th:object="${privilegeDTO}">
+											<td th:attr="class=${#locale.language}=='ar'? 'col-xs-10':'col-xs-10',style=${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4;width:100%':'border-left: 1px solid #cdd0d4;width:100%'" 
+											th:text="*{privilegeNameEn}">PrivilegeNameEn</td>
+											<td th:attr="style=${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4'" class="col-xs-2">
+											<input type="checkbox" name="selectedPrivileges"
+												th:attr="value=${privilegeDTO.privilegeId},style=${#locale.language}=='ar'? 'margin-left: 50px':'margin-right: 50px'"
+												th:checked="*{selected}" /></td>
+										</tr>
+										<tr >
+										<td></td>
+										</tr>
+									</tbody>
+								</table>
+
+						</div>
+						<div id="errorDivParent" class="row" th:if="${errorResponseDesc != null}" >
+							<div class="linebreaker-lg"></div>
+							<div class="linebreaker-lg"></div>		
+							<div class="col-md-12" style="text-align: center;">	
+								<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+									 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+									 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+									<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+									</span> </strong>
+								</div>
+							</div>
+						</div>
+						<div class="linebreaker-lg"></div>
+					</div>
+					
+					<div align="center" id="save-cancel-buttonid">
+						<button type="button" class="btn btn-success" id="save-button"
+							onclick="saveManageRoleChanges()" th:text="#{user.save}">Save</button>
+						<button type="button" class="btn btn-danger" th:text="#{user.reset}">Reset</button>
+					</div>
+					
+				</form>
+			</div>
+		</div>
+		
+		<div id="managerole-updatedata-status"
+			th:fragment="managerole-updatedata-status-frag">
+			
+			<div id="updateManageRoleSuccessDivPanel" class="row" th:if="${updateRoleStatus != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div id="successDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: green;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/success.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>							
+						 <strong>
+						 <span class="text-success text-center" style="font-size: 15px" >Role Details Updated Successfully
+						 </span>
+						  </strong>
+					</div>
+				</div>
+			</div>
+			
+			<div id="errorDivParent" class="row" th:if="${errorResponseDesc != null}" >
+				<div class="linebreaker-lg"></div>
+				<div class="linebreaker-lg"></div>		
+				<div class="col-md-12" style="text-align: center;">	
+					<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+						<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+						</span> </strong>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+
+		<div class="linebreaker-lg"></div>
+		<div class="linebreaker-lg"></div>
+	
+		<div id="manageroles-role-list"
+			th:fragment="manageroles-role-list-frag">
+			<div id="manageroles-role-list-results"
+				th:if="${not #lists.isEmpty(rolePrivilegeListDTO.roleDTOList)}">
+				<div id="roletableid">
+					<table class="table table-fixed">
+						<thead>
+							<tr style="width:103.1%">
+								<th th:text="#{user.modifyprivilegedesc}" style="font-size: 14px;" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'"><strong>
+								Click Edit Button to modify privileges </strong></th>	
+							</tr>
+							<tr style="width:103.1%">
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:25%;font-size: 15px': 'float:left;width:25%;font-size: 15px',
+								class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.rolename}"><strong>Role Name</strong></th>
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:25%;font-size: 15px': 'float:left;width:25%;font-size: 15px',
+								class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.roledescen}"><strong>Description(EN)</strong></th>
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:25%;font-size: 15px': 'float:left;width:25%;font-size: 15px',
+								class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.roledescar}"><strong>Description(AR)</strong></th>
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:15%;font-size: 15px': 'float:left;width:15%;font-size: 15px',
+								class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.roleactive}"><strong>Active</strong></th>
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:10%;font-size: 15px': 'float:left;width:10%;font-size: 15px',
+								class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.roleaction}"><strong>Action</strong></th>
+							</tr>
+						</thead>
+						<tbody style="overflow-x: hidden;">
+							<tr th:each="roleDTO : ${rolePrivilegeListDTO.roleDTOList}"  style="width:100%;display: -webkit-box"
+								th:object="${roleDTO}">
+								<td th:attr="style=${#locale.language}=='ar'? 'width:25%;border-right: 12px solid #cdd0d4':'width:25%;border-left: 1px solid #cdd0d4'" th:text="*{roleName}">Role Name</td>
+								<td style="width:25%" th:text="*{descriptionEn}">Description(EN)</td>
+								<td style="width:27%" th:text="*{descriptionAr}">Description(AR)</td>
+								<td style="width:14%" th:text="*{active}">Active</td>
+								<td style="width:10%">
+									<button type="button" class="btn btn-success" th:attr="value=${roleDTO.roleId},id=${roleDTO.roleId}"
+										onclick="loadSelectedRoleDetails(this.id)" th:text="#{user.roleedit}">Edit
+									</button>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
+				<div class="linebreaker-lg"></div>
+				<div class="linebreaker-lg"></div>
+			</div>
+			
+			<div id="errorDivParent" class="row" th:if="${errorResponseDesc != null}" >
+				<div class="linebreaker-lg"></div>
+				<div class="linebreaker-lg"></div>		
+				<div class="col-md-12" style="text-align: center;">	
+					<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+						<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+						</span> </strong>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+</body>
+</html>

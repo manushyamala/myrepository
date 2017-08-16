@@ -1,0 +1,209 @@
+/*Style for Header*/
+.um-header {
+	background: #e8f6ff;
+	margin: 0;
+}
+.um-header .header-logo {
+	width: 58px;
+	height: 58px;
+	margin-right: 16px;
+	float: left;
+	background: url('../img/logo_header.png');
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.um-header .logo-panel {
+	float: left;
+    line-height: 58px;
+    margin: 0;
+    padding-top: 6px;
+    color: #5c5b5c;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 20px;
+}
+.um-profile #welcome-messsage-div h3 {
+	color: #a9b2b6;
+	font-size: 14px;
+}
+.um-profile #welcome-messsage-div h3 span {
+	float: left;
+	width: 100%;
+	color: #677b86;
+	font-size: 16px;
+}
+.um-logout .glyphicon {
+	color: #3e8fd7;
+	background: none !important;
+	font-size: 24px;
+}
+
+/*Style for Sub Header*/
+.um-subheader {
+	padding: 0;
+	margin: 0;
+	background: #546973;
+}
+.um-subheader .nav-justified > li > a {
+	color: #ffffff;
+}
+.um-subheader .nav-justified > li > a:hover {
+	background: none;
+	color: #ffe998;
+}
+.um-subheader .nav-justified > li.active > a {
+	background: none;
+	color: #ffe998;
+}
+
+/*View User page and search*/
+.um-search-form {
+	background: #f6f9fa;
+	float: left;
+    width: 100%;
+    margin-top: 100px;
+    border: 1px solid #ced6db;
+    border-radius: 5px;
+    padding: 20px 40px;
+    margin-bottom: 30px;
+}
+.um-search-form.form-horizontal .form-group {
+	margin-left: 0;
+}
+.um-search-form .up-form-group {
+    width: 30%;
+    float: left;
+    margin-right: 4%;
+}
+.um-search-form .up-form-group:nth-child(3) {
+	margin-right: 0 !important;
+}
+.um-search-form .up-form-group label {
+	float: left;
+	width: 100%;
+	text-align: left;
+	padding-left: 0;
+	padding-bottom: 8px;
+}
+.um-search-form .up-form-group input {
+	float: left;
+	width: 100%;
+}
+
+/*2 Column form group*/
+.um-search-form .up-form-group-half {
+    width: 47%;
+    float: left;
+    margin-right: 4%;
+}
+.um-search-form .up-form-group-half:nth-child(2) {
+	margin-right: 0 !important;
+}
+.um-search-form .up-form-group-half label {
+	float: left;
+	width: 100%;
+	text-align: left;
+	padding-left: 0;
+	padding-bottom: 8px;
+}
+.um-search-form .up-form-group-half input {
+	float: left;
+	width: 100%;
+}
+
+/*1 Column form group full*/
+.um-search-form .up-form-group-full {
+    width: 100%;
+    float: left;
+    margin-right: 4%;
+}
+.um-search-form .up-form-group-full:nth-child(2) {
+	margin-right: 0 !important;
+}
+.um-search-form .up-form-group-full label {
+	float: left;
+	width: 100%;
+	text-align: left;
+	padding-left: 0;
+	padding-bottom: 8px;
+}
+.um-search-form .up-form-group-full input {
+	float: left;
+	width: 100%;
+}
+
+/*Search Button on Form Group*/
+.um-search-form .um-search-btn {
+	width: 97%;
+	border: 2px solid #3e8fd7;
+	background: #3e8fd7;
+	color: #ffffff;
+	font-size: 18px;
+	font-weight: bold;
+	transition: all 0.2s ease;
+}
+.um-search-form .um-search-btn:hover {
+	background: #ffffff;
+	color: #3e8fd7;
+	transition: all 0.2s ease;
+}
+.um-search-form .um-search-btn-full {
+	width: 100% !important;
+}
+
+/*Table Styles*/
+.table thead .bg-primary {
+	font-size: 16px;
+	background: #3e8fd7;
+	border: 0;
+}
+.table thead .bg-primary:first-child {
+	border-top-left-radius: 5px;
+}
+.table thead .bg-primary:last-child {
+	border-top-right-radius: 5px;
+}
+.divider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
+.arabic { 
+	text-align:right !important; 
+}
+
+.english { 
+	text-align:left; 
+}
+
+.linebreaker-sm{
+	width:100%;
+	height: 10px;
+	float:left;
+}
+
+.linebreaker-md{
+	width:100%;
+	height: 25px;
+	float:left;
+}
+
+.linebreaker-lg{
+	width:100%;
+	height: 50px;
+	float:left;
+}
+.table-fixed thead {
+  width: 97%;
+}
+.table-fixed tbody {
+  height: 230px;
+  overflow-y: auto;
+  width: 100%;
+}
+.table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+  display: block;
+}
+.table-fixed tbody td, .table-fixed thead > tr> th {
+  border-bottom-width: 0;
+}

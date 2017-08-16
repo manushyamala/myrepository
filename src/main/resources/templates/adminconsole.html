@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header">
+</head>
+<body>
+	<div th:replace="fragments/staticmenu :: staticmenu"
+		class="container-fluid"></div>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div>
+				<ul class="nav nav-pills nav-justified ">
+					<li class="li-class-grey"><a class="a-class"
+						href="configuration"><strong>Configuration</strong></a></li>
+					<li class="li-class-blue"><a class="a-class" href="monitoring"><strong>Monitoring</strong></a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<br /> <br />
+		<div id="welcome-messsage-div">
+			<blockquote>
+				<p>
+					<b>Please proceed by choosing one of the above tab,</b>
+				</p>
+				<p>Choose Configuration Tab for modifying application
+					configuration related attributes.</p>
+				<p>Choose Monitoring Tab to monitor application health and view
+					JVM Arguments.</p>
+			</blockquote>
+		</div>
+	</div>
+</body>
+</html>

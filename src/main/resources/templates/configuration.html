@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header">
+</head>
+<body>
+	<div th:replace="fragments/staticmenu :: staticmenu"
+		class="container-fluid"></div>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div>
+				<ul class="nav nav-pills nav-justified ">
+					<li class="active"><a href="configuration"><strong>Configuration</strong></a></li>
+					<li class="li-class-light-grey"><a href="monitoring"><strong>Monitoring</strong></a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div>&nbsp;</div>
+		<div>&nbsp;</div>
+
+		<div id="logging-level-update-status-div"
+			th:fragment="logging-level-update-status-frag">
+			<div id="logging-level-update-status-inline-div"
+				th:if="${updateStatus != null}">
+				<table id="logging-updte-status-table" style="width: 100%;">
+
+
+					<tr>
+						<td class="td-no-border">
+							<div id="resultDiv" class="jumbotron" th:inline="text">
+								<Strong>Application Logging Level Updated Successfully.
+									Please note, current Log Level has been configured with Level :
+									[[${currentLogLevel}]] </Strong>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div id="configuration-details-table">
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="bg-primary th-no-border-bottom"
+								style="border-left: 1px solid #cdd0d4; text-align: center; padding: 1px"
+								width="35%"><h4>
+									<strong>Configurable Attributes</strong>
+								</h4></th>
+							<th class="td-no-border" width="35%"></th>
+							<th class="td-no-border" width="30%"></th>
+						</tr>						
+					</thead>
+					<tbody>
+						<tr>
+							<td class="td-no-border"><div
+									id="application-logging-level-caption">
+									<b>Application Logging Level : </b>
+								</div></td>
+							<td class="td-no-border"><span
+								id="application-logging-level-dynval" style="float: left;"
+								th:text="${currentLogLevel}">0</span></td>
+							<td class="td-no-border">
+								<div id="application-logging-level-val">
+									<span style="float: left;"><button type="button"
+											class="btn btn-primary"
+											onclick="retrieveApplicationLoggingLevel()">Modify</button> </span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border"></td>
+							<td class="td-no-border"></td>
+						</tr>
+					</tbody>
+
+				</table>
+			</div>
+		</div>
+
+		<div id="logging-level-selection-div"
+			th:fragment="logging-level-selection-frag">
+			<div id="logging-level-selection-inline-div"
+				th:if="${showLoggingLevelForUpdate != null}">
+				<table id="logging-configuration-listing-table" style="width: 100%;">
+					<thead>
+						<tr>
+							<th class="bg-primary th-no-border-bottom" width="35%"></th>
+							<th class="th-no-border-bottom" width="35.5%"></th>
+							<th class="th-no-border-bottom" width="29.5%"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="td-no-border"><i>Select the Logging level and
+									Proceed.</i></td>
+							<td class="td-no-border">
+								<div class="radio">
+									<label><input type="radio" name="loglevel" value="OFF" />OFF</label>
+								</div>
+							</td>
+							<td class="td-no-border"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border">
+								<div class="radio">
+									<label><input type="radio" name="loglevel"
+										value="ERROR" />ERROR</label>
+								</div>
+							</td>
+							<td class="td-no-border"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border">
+								<div class="radio">
+									<label><input type="radio" name="loglevel" value="WARN" />WARN</label>
+								</div>
+							</td>
+							<td class="td-no-border">
+								<button type="button" class="btn btn-primary"
+									onclick="updateApplicationLoggingLevel()">Update</button>
+							</td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border">
+								<div class="radio">
+									<label><input type="radio" name="loglevel" value="INFO" />INFO</label>
+								</div>
+							</td>
+							<td class="td-no-border"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border">
+								<div class="radio">
+									<label><input type="radio" name="loglevel"
+										value="DEBUG" />DEBUG</label>
+								</div>
+							</td>
+							<td class="td-no-border"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border">
+								<div class="radio">
+									<label><input type="radio" name="loglevel"
+										value="TRACE" />TRACE</label>
+								</div>
+							</td>
+							<td class="td-no-border"></td>
+						</tr>
+
+					</tbody>
+
+				</table>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

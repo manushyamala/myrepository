@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" th:attr="dir=${#locale.language}=='ar' ? 'rtl' : 'ltr'">
+<head th:replace="fragments/header">
+</head>
+<body>
+	<div th:replace="fragments/staticmenu :: staticmenu"
+		class="container-fluid"></div>
+	<div class="container">
+		<div id="errorDiv"></div>
+		<form class="form-horizontal um-search-form" role="form"
+			id="manageuser-search-form" th:object="${userSearchObj}"
+			method="post">
+			<div class="form-group up-form-group">
+				<label for="Name" th:attr="class= ${#locale.language}=='ar'? 'col-sm-2 control-label arabic' : 'col-sm-2 control-label'" th:text="#{user.name}">Name</label> <input
+					type="text" th:field="*{name}" class="form-control" id="name"
+					th:attr="placeholder=#{user.name}" />
+			</div>
+			<div class="form-group up-form-group">
+				<label for="Mobile No" th:attr="class= ${#locale.language}=='ar'? 'col-sm-2 control-label arabic' : 'col-sm-2 control-label'"  th:text="#{user.mobileNo}">Mobile
+					# </label> <input type="text" th:field="*{mobileNo}" class="form-control"
+					id="mobileno" th:attr="placeholder=#{user.mobileNo}"/>
+			</div>
+			<div class="form-group up-form-group">
+				<label for="User Name" th:attr="class= ${#locale.language}=='ar'? 'col-sm-2 control-label arabic' : 'col-sm-2 control-label'"  th:text="#{user.userName}">User
+					Name</label> <input type="text" th:field="*{loginName}"
+					class="form-control" id="username" th:attr="placeholder=#{user.userName}" />
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10"></div>
+			</div>
+			<div class="form-group">
+				<button style="position: inherit;" type="button" th:attr="style=${#locale.language}=='ar'? 'float:left':''" class="um-search-btn btn btn-primary" th:text="#{usermanagement.search}"
+					onclick="retrieveUserDetailsForManageUserListView()">Search</button>
+			</div>
+		</form>
+				
+		<div id="manageuser-searchdata" 
+			th:fragment="manageuser-searchdata-result-frag" style="float:left;width:100%;">
+
+			<div id="manageuser-searchdata-result"
+				th:if="${not #lists.isEmpty(userObjList)}">
+				<div id="mytableid" >
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th th:text="#{user.userSearchResults}" style="font-size: 16px;" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'">
+										<strong>User Search Results</strong>
+								</th>
+								<th></th>
+								<th></th>
+								<th></th>
+							</tr>
+							<tr>
+								<th th:attr="class= ${#locale.language}=='ar'? 'bg-primary arabic':'bg-primary'" style="font-size: 15px;" th:text="#{user.userId}"><strong>User ID</strong></th>
+								<th th:attr="class= ${#locale.language}=='ar'? 'bg-primary arabic':'bg-primary'" style="font-size: 15px;" th:text="#{user.loginName}"><strong>User Login</strong></th>
+								<th th:attr="class= ${#locale.language}=='ar'? 'bg-primary arabic':'bg-primary'" style="font-size: 15px;" th:text="#{user.emailAddress}"><strong>Email ID</strong></th>
+								<th class="bg-primary"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="userObj : ${userObjList}" th:object="${userObj}">
+								<td th:text="*{userId}">User ID</td>
+								<td th:text="*{userLogin}">User Login</td>
+								<td th:text="*{email}">Email ID</td>
+								<td th:attr="class= ${#locale.language}=='ar'? 'text-left':'text-right'"><button type="button"
+										th:attr="value=${userObj.userId},id=${userObj.userId},style=${#locale.language}=='ar'? 'float:left':'float:right'"
+										class="btn btn-success"
+										onclick="retrieveUserDetailsForManageUserUpdateView(this.id)" th:text="#{user.modify}">Modify</button></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+
+			<div id="noResultDivParent" class="row" th:if="${ #lists.isEmpty(userObjList) and warnResponseDesc != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div  id="noResultDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: yellow;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/warning.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${warnResponseDesc}" class="text-warning text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+					</div>
+				</div>
+			</div>
+			<div id="errorDivParent" class="row" th:if="${ #lists.isEmpty(userObjList) and errorResponseDesc != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+					</div>
+				</div>
+			</div>
+		</div>
+			
+
+		<div id="manageuser-updatedata"
+			th:fragment="manageuser-updatedata-frag">
+			<div id="manageuser-updatedata-results"
+				th:if="${selectedUserObj != null}" th:object="${selectedUserObj}">
+				<div class="linebreaker-lg"></div>
+				<form class="form-horizontal" role="form"
+					id="manageuser-update-form" th:object="${updatedUserObj}"
+					method="post">
+					<div id="mytableid">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4;font-size: 15px':'border-left: 1px solid #cdd0d4;font-size: 15px' ,class = ${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" 
+									th:text="#{user.userDetails}"><strong>User Details </strong></th>
+									<th class="bg-primary" th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4'"></th>
+
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.loginName}" 
+									class="col-xs-9" ><strong>User Login :</strong></td>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4;padding:4px',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+										th:text="${selectedUserObj.userName}">User Login</td>
+								</tr>
+
+								<tr>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.phoneNo}">
+									 <strong>PhoneNumber : </strong></td>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4;padding:4px':'border-right: 1px solid #cdd0d4;padding:4px',class = ${#locale.language}=='ar'? 'text-left':'text-right'" >
+										<input type="text" th:value="${selectedUserObj.phoneNo}"
+										id="phoneNo" name="phoneNo" class="form-control"
+										onchange="changedAttributes(this)" th:attr="placeholder=#{user.phoneNo}"  />
+									</td>
+								</tr>
+								<tr>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.mobileNo}">
+									<strong>MobileNumber :</strong></td>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4;padding:4px':'border-right: 1px solid #cdd0d4;padding:4px',class = ${#locale.language}=='ar'? 'text-left':'text-right'" >
+										<input type="text" th:value="${selectedUserObj.mobileNo}"
+										id="mobileNo" name="mobileNo" class="form-control"
+										onchange="changedAttributes(this)" th:attr="placeholder=#{user.mobileNo}" />
+									</td>
+								</tr>
+
+								<tr>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.emailAddress}"><strong>Email
+											: </strong></td>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4;padding:4px':'border-right: 1px solid #cdd0d4;padding:4px',class = ${#locale.language}=='ar'? 'text-left':'text-right'" >
+										<input type="text" th:value="${selectedUserObj.email}"
+										id="email" name="email" class="form-control"
+										th:attr="placeholder=#{user.emailAddress}" />
+									</td>
+								</tr>
+
+								<tr>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.dateofBirth}"><strong>Date
+											Of Birth :</strong></td>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4;padding:4px':'border-right: 1px solid #cdd0d4;padding:4px',class = ${#locale.language}=='ar'? 'text-left':'text-right'" >
+										<input type="text"
+										th:value="${#dates.format(selectedUserObj.employee.dateOfBirth, #messages.msg('app.dateformat'))}"
+										id="dateOfBirth" name="dateOfBirth"
+										class="form-control datepicker"
+										onchange="changedAttributes(this)" th:attr="placeholder=#{user.dateofBirth}"  />
+									</td>
+								</tr>
+								<tr>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.firstNameEn}"><strong>First
+											Name (En) : </strong></td>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4;padding:4px':'border-right: 1px solid #cdd0d4;padding:4px',class = ${#locale.language}=='ar'? 'text-left':'text-right'" >
+										<input type="text"
+										th:value="${selectedUserObj.employee.firstNameEn}"
+										id="firstNameEn" name="firstNameEn" class="form-control"
+										th:attr="placeholder=#{user.firstNameEn}" />
+									</td>
+								</tr>
+								<tr>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.middleNameEn}"><strong>Middle
+											Name (En) : </strong></td>
+									<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4;padding:4px':'border-right: 1px solid #cdd0d4;padding:4px',class = ${#locale.language}=='ar'? 'text-left':'text-right'" >
+										<input type="text"
+										th:value="${selectedUserObj.employee.middleNameEn}"
+										id="middleNameEn" name="middleNameEn" class="form-control"
+										th:attr="placeholder=#{user.middleNameEn}" />
+									</td>
+								</tr>
+								<tr>
+									<td
+										th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4;border-bottom: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4;border-bottom: 1px solid #cdd0d4'" th:text="#{user.lastNameEn}"><strong>Last
+											Name (En) : </strong></td>
+									<td
+										th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4;border-bottom: 1px solid #cdd0d4;padding:4px':'border-right: 1px solid #cdd0d4;border-bottom: 1px solid #cdd0d4;padding:4px',class = ${#locale.language}=='ar'? 'text-left':'text-right'">
+										<input type="text" th:value="${selectedUserObj.employee.lastNameEn}"
+										id="lastNameEn" name="lastNameEn" class="form-control"
+										th:attr="placeholder=#{user.lastNameEn}" /></td>
+								</tr>
+							</tbody>
+						</table>
+						<div>
+							<button type="button" class="btn btn-success"
+								style="margin-left: auto; margin-right: auto; display: block; margin-top: 5%; margin-bottom: 0%"
+								th:attr="value=${selectedUserObj.userId},id=${selectedUserObj.userId}"
+								onclick="updateUserDetails(this.id)" th:text="#{user.update}">Update</button>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<div id="noResultDivParent" class="row" th:if="${ #lists.isEmpty(userObj) and warnResponseDesc != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div  id="noResultDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: yellow;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/warning.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${warnResponseDesc}" class="text-warning text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+					</div>
+				</div>
+			</div>
+			<div id="errorDivParent" class="row" th:if="${ #lists.isEmpty(userObj) and errorResponseDesc != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+
+		<div id="manageuser-updatedata-status"
+			th:fragment="manageuser-updatedata-status-frag">
+			
+			<div id="updateUserSuccessDivPanel" class="row" th:if="${updateUserStatus != null}" >
+			<div class="col-md-12" style="text-align: center;">
+				<div id="successDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: green;">
+					 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					 <img src="img/success.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>							
+					 <strong>
+					 <span class="text-success text-center" style="font-size: 15px" >User Details Updated Successfully
+					 </span>
+					  </strong>
+				</div>
+			</div>
+		</div>
+
+		</div>
+		
+		<div class="linebreaker-lg"></div>
+
+	</div>
+
+</body>
+</html>

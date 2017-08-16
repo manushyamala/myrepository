@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"  
+	xmlns:th="http://www.thymeleaf.org" th:attr="dir=${#locale.language}=='ar' ? 'rtl' : 'ltr'" >
+<head th:replace="fragments/header">
+</head>
+<body>
+	<div th:replace="fragments/staticmenu :: staticmenu"
+		class="container-fluid"></div>
+	<div class="container">
+		<div id="errorDiv"></div>
+		<form class="form-horizontal um-search-form" role="form"
+			id="viewuser-search-form" th:object="${userSearchObj}" method="post">
+			<div class="form-group up-form-group">
+				<label for="Name" th:attr="class= ${#locale.language}=='ar'? 'col-sm-2 control-label arabic' : 'col-sm-2 control-label'" th:text="#{user.name}">Name</label> <input
+					type="text" th:field="*{name}" class="form-control" id="name"
+					th:attr="placeholder=#{user.name}" />
+			</div>
+			<div class="form-group up-form-group">
+				<label for="Mobile No" th:attr="class= ${#locale.language}=='ar'? 'col-sm-2 control-label arabic' : 'col-sm-2 control-label'"  th:text="#{user.mobileNo}">Mobile
+					# </label> <input type="text" th:field="*{mobileNo}" class="form-control"
+					id="mobileno" th:attr="placeholder=#{user.mobileNo}"/>
+			</div>
+			<div class="form-group up-form-group">
+				<label for="User Name" th:attr="class= ${#locale.language}=='ar'? 'col-sm-2 control-label arabic' : 'col-sm-2 control-label'"  th:text="#{user.userName}">User
+					Name</label> <input type="text" th:field="*{loginName}"
+					class="form-control" id="username" th:attr="placeholder=#{user.userName}" />
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10"></div>
+			</div>
+			<div class="form-group">
+				<button type="button" class="um-search-btn btn btn-primary"
+					onclick="retrieveUserDetails()"  th:text="#{usermanagement.search}">Search</button>
+			</div>
+		</form>
+
+		<div id="viewuser-searchdata"
+			th:fragment="viewuser-searchdata-result-frag" style="float:left;width:100%">
+			<div id="viewuser-searchdata-result"
+				th:if="${not #lists.isEmpty(userObjList)}">
+				<div id="mytableid">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th th:text="#{user.userSearchResults}" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'"><h4>
+										<strong >User Search Results</strong>
+									</h4></th>
+								<th></th>
+								<th></th>
+								<th></th>
+							</tr>
+							<tr>
+								<th class="bg-primary " style="font-size: 15px" th:attrappend="class= ${#locale.language}=='ar'?  'arabic':'' " th:text="#{user.userId}"><strong>User ID</strong></th>
+								<th class="bg-primary " style="font-size: 15px" th:attrappend="class= ${#locale.language}=='ar'? 'arabic':'' "  th:text="#{user.loginName}"><strong>User Login</strong></th>
+								<th class="bg-primary " style="font-size: 15px" th:attrappend="class= ${#locale.language}=='ar'? 'arabic':'' "  th:text="#{user.emailAddress}"><strong>Email ID</strong></th>
+								<th class="bg-primary"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="userObj : ${userObjList}" th:object="${userObj}">
+								<td th:text="*{userId}">User ID</td>
+								<td th:text="*{userLogin}">User Login</td>
+								<td th:text="*{email}">Email ID</td>
+								<td th:attr="class= ${#locale.language}=='ar'? 'text-left':'text-right'"><button type="button"
+										th:attr="value=${userObj.userId},id=${userObj.userId}"
+										class="btn btn-success"
+										onclick="retrieveUserDetailsForViewUser(this.id)" th:text="#{user.view}">View</button></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="noResultDivParent" class="row" th:if="${ #lists.isEmpty(userObjList) and warnResponseDesc != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div  id="noResultDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: yellow;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/warning.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${warnResponseDesc}" class="text-warning text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+					</div>
+				</div>
+			</div>
+			<div id="errorDivParent" class="row" th:if="${ #lists.isEmpty(userObjList) and errorResponseDesc != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+
+
+		
+		<div id="viewuser-searchdata-details"
+			th:fragment="viewuser-searchdata-frag">
+		
+			<div id="viewuser-searchdata-details-results"
+				th:if="${userObj != null}" th:object="${userObj}">
+				<div class="linebreaker-lg"></div><div class="linebreaker-sm"></div>
+				<div id="mytableid">
+					<table class="table table-striped table-hover ">
+						<thead>
+							<tr>
+								<th class="bg-primary " style="font-size: 15px;" th:attrappend="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4' ,class = ${#locale.language}=='ar'? 'text-right':'text-left'" 
+								 th:text="#{user.userDetails}"><strong>User	Details</strong></th>
+								<th class="bg-primary" th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4'"></th>
+
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.userName}"><strong>User
+										Name : </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{userLogin}">User Name</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.loginName}"><strong>User
+										Login :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{userName}">User Login</td>
+							</tr>
+
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.userExpiryDate}"><strong>User
+										Expiry Date : </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="${#dates.format(userObj.userExpiryDate, #messages.msg('app.dateformat'))}">User
+									Expiry Date</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.phoneNo}"><strong>Phone
+										Number : </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{phoneNo}">Phone Number</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.mobileNo}"><strong>Mobile
+										Number :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{mobileNo}">Mobile Number</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.emailAddress}"><strong>Email
+										: </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{email}">Email</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.createdBy}"><strong>Created
+										By :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{createdBy}">Created By</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.modifiedBy}"><strong>Modified
+										By : </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{modifiedBy}">Modified By</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.modifiedDate}"><strong>Modified
+										Date :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:if="${userObj.modifiedDate != null}"
+									th:text="${#dates.format(userObj.modifiedDate, #messages.msg('app.dateformat'))}">Modified
+									Date</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.lastAccessedDate}"><strong>Last
+										Accessed Date : </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:if="${userObj.lastAccessDate != null}"
+									th:text="${#dates.format(userObj.lastAccessDate, #messages.msg('app.dateformat'))}">Last
+									Accessed Date</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'"  th:text="#{user.activationDate}"><strong>User
+										Activation Date :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:if="${userObj.userActivationDate != null}"
+									th:text="${#dates.format(userObj.userActivationDate, #messages.msg('app.dateformat'))}">User
+									Activation Date</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.rank}"><strong>Rank
+										: </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.rank}">Rank</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.employeeNo}"><strong>Employee
+										Number :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.employeeNumber}">Employee Number</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.shift}"><strong>Shift
+										: </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.shift}">Shift</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.gender}"><strong>Gender
+										:</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.gender.descEnglish}">Gender</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.education}"><strong>Education
+										: </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.education.descEnglish}">Education</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.dateofBirth}"><strong>Date
+										Of Birth :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:if="${userObj.employee.dateOfBirth != null}"
+									th:text="${#dates.format(userObj.employee.dateOfBirth, #messages.msg('app.dateformat'))}">Date
+									Of Birth</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.firstNameEn}"><strong>First
+										Name (En) : </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.firstNameEn}">First Name (En)</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.firstNameAr}"><strong>First
+										Name (Ar) :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.firstNameAr}">First Name (Ar)</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.middleNameEn}"><strong>Middle
+										Name (En) : </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.middleNameEn}">Middle Name (En)</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.middleNameAr}"><strong>Middle
+										Name (Ar) :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.middleNameAr}">Middle Name (Ar)</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.lastNameEn}"><strong>Last
+										Name (En) : </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.lastNameEn}">Last Name (En)</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.lastNameAr}"><strong>Last
+										Name (Ar) :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.lastNameAr}">Last Name (Ar)</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.jobTitle}"><strong>Job
+										Title ID : </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.jobTitleId}">Job Title ID</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.hrTitle}"><strong>HR
+										Title ID :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.hrTitleId}">HR Title ID</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.sector}"><strong>Sector
+										ID : </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.sectorId}">Sector ID</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.branch}"><strong>Branch
+										ID :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.branchId}">Branch ID</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.departmentID}"><strong>Department
+										ID : </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.departmentId}">Department ID</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.blackListDepartment}"><strong>Black List
+										Department ID :</strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.blackListDepartmentId}">Black
+									Department ID</td>
+							</tr>
+							<tr>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4'" th:text="#{user.blackListSector}"><strong>Black
+										List Sector ID : </strong></td>
+								<td th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.blackListSectorId}">Department ID</td>
+							</tr>
+							<tr>
+								<td
+									th:attr="style= ${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4; border-bottom: 1px solid #cdd0d4':'border-left: 1px solid #cdd0d4; border-bottom: 1px solid #cdd0d4'" th:text="#{user.militaryID}"><strong>Military
+										ID :</strong></td>
+								<td
+								    th:attr="style= ${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4; border-bottom: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4; border-bottom: 1px solid #cdd0d4',class = ${#locale.language}=='ar'? 'text-left':'text-right'" 
+									th:text="*{employee.militaryNo}">Military
+									ID</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="linebreaker-lg"></div>
+			</div>
+			
+			<div id="noResultDivParent" class="row" th:if="${ #lists.isEmpty(userObj) and warnResponseDesc != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div  id="noResultDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: yellow;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/warning.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${warnResponseDesc}" class="text-warning text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+					</div>
+				</div>
+			</div>
+			<div id="errorDivParent" class="row" th:if="${ #lists.isEmpty(userObj) and errorResponseDesc != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+					</div>
+				</div>
+			</div>
+			
+
+		</div>
+
+
+
+	</div>
+</body>
+</html>

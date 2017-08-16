@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" th:attr="dir=${#locale.language}=='ar' ? 'rtl' : 'ltr'" >
+<head th:replace="fragments/header">
+</head>
+<body>
+	<div th:replace="fragments/staticmenu :: staticmenu"
+		class="container-fluid"></div>
+
+	<div class="container">
+
+		<div class="form-group um-search-form"
+			th:if="${allUserGroupList != null and not #lists.isEmpty(allUserGroupList)}">
+			<div class="linebreaker-lg"></div>
+				<div id="english-locale-div" th:if="${#locale.language}=='en'">
+					<div class="row" >
+						<label for="Select User Group"  th:attr="class= ${#locale.language}=='ar'? 'col-sm-2 control-label arabic' : 'col-sm-2 control-label'" th:text="#{user.selectrole}">
+						Select User Group :</label>
+						<div class="col-sm-5">
+							<select class="form-control" id="userGroupIDSelector"
+							onchange="showLoadCriteriaTagDiv()">
+							<option value="0" th:text="#{user.selectusergroup}">Select User Group</option>
+							<option th:each="userGroupDTO : ${allUserGroupList}"
+								th:value="${userGroupDTO.userGroupId}"
+								th:text="${userGroupDTO.nameEn}">
+							</option>
+							</select>
+						</div>
+					</div>
+					<div class="linebreaker-md"></div>
+					<div class="linebreaker-md"></div>
+					<div class="row" >
+						<div class="col-sm-2 control-label"></div>
+						<div class="col-sm-5" id="loadCriteriaTagDiv" style="display: none;">
+							<button type="button" class="btn btn-primary"
+							onclick="loadCriteriaTags()" th:text="#{user.loadcriteriatags}">Load Criteria Tags</button>
+						</div>
+					</div>
+
+				</div>
+				<div id="arabic-locale-div" th:if="${#locale.language}=='ar'">
+					<div class="row" >
+						<div class="col-sm-5 control-label" ></div>
+						<div class="col-sm-5">
+							<select class="form-control" id="userGroupIDSelector"
+							onchange="showLoadCriteriaTagDiv()">
+							<option value="0" th:text="#{user.selectusergroup}">Select User Group</option>
+							<option th:each="userGroupDTO : ${allUserGroupList}"
+								th:value="${userGroupDTO.userGroupId}"
+								th:text="${userGroupDTO.nameEn}">
+							</option>
+							</select>
+						</div>
+						<label for="Login Name"  th:attr="class= ${#locale.language}=='ar'? 'col-sm-2 control-label arabic' : 'col-sm-2 control-label'" 
+						th:text="#{user.selectusergroup}">Select User Group :</label>
+					</div>
+					<div class="linebreaker-md"></div>
+					<div class="linebreaker-md"></div>
+					<div class="row" >
+						<div class="col-sm-5 control-label" ></div>
+						<div class="col-sm-5" id="loadCriteriaTagDiv" style="display: none;">
+							<button type="button" class="btn btn-primary"
+							onclick="loadCriteriaTags()" th:text="#{user.loadcriteriatags}">Load Criteria Tags</button>
+						</div>
+					</div>
+			</div>
+			</div>
+			<div id="errorDivParent" class="row" th:if="${ errorResponseDesc != null}" >
+				<div class="linebreaker-lg"></div>
+				<div class="linebreaker-lg"></div>		
+				<div class="col-md-12" style="text-align: center;">	
+					<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+						<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+						</span> </strong>
+					</div>
+				</div>
+			</div>
+			<div class="linebreaker-lg"></div>
+			<div class="linebreaker-lg"></div>
+
+
+
+		<div id="show-criteriatag-list"
+			th:fragment="show-criteriatag-list-frag">
+
+			<div id="show-unassigned-criteriatag-list"
+				th:if="${criteriaTagObjectWrapper != null}"
+				th:object="${criteriaTagObjectWrapper}">
+				<div id="table-completeRoleList">
+					<table class="table table-fixed ">
+						<thead>
+							<tr>
+								<th th:text="#{user.addcriteriatagdesc}" style="font-size: 14px;" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'">
+												<strong>Click Assign Button to add a Criteria Tag</strong>
+								</th>
+							</tr>
+							<tr>
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width: 103.1%;font-size: 15px': 'float:left;width: 103.1%;font-size: 15px',
+							class=${#locale.language}=='ar'? 'bg-primary col-xs-2 text-right':'bg-primary col-xs-2 text-left'" th:text="#{user.availablecriteriatags}"><strong>Available
+										Criteria Tags </strong></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr
+								th:each="unassignedCriteriaTagDTO : ${criteriaTagObjectWrapper.unassignedCriteriaTagDTOList}"
+								th:object="${unassignedCriteriaTagDTO}"
+								th:if="${not #lists.isEmpty(criteriaTagObjectWrapper.unassignedCriteriaTagDTOList)}">
+								<td th:attr="style=${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4;width:100%':'border-left: 1px solid #cdd0d4;width:100%'"
+								  	class="col-xs-11" th:text="*{tagNameEn}">Criteria Tag Name</td>
+								<td th:attr="style=${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4;width:100%':'border-right: 1px solid #cdd0d4;width:100%'" class="col-xs-1"><button
+										type="button"
+										th:attr="value=${unassignedCriteriaTagDTO.criteriaTagId},id=${unassignedCriteriaTagDTO.criteriaTagId}"
+										class="btn btn-success"
+										onclick="modifyInMemoryCriteriaTagsForSingleUpdate(this.id,'add')" th:text="#{user.assign}">Assign</button></td>
+							</tr>
+							<tr th:if="${not #lists.isEmpty(criteriaTagObjectWrapper.unassignedCriteriaTagDTOList)}">
+								<td></td>
+							</tr>
+							<tr
+								th:if="${#lists.isEmpty(criteriaTagObjectWrapper.unassignedCriteriaTagDTOList)}">
+								<td class="col-xs-12"><b>No Available Criteria Tags</b></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="linebreaker-lg"></div>
+				<div class="linebreaker-lg"></div>
+			</div>
+
+			<div id="show-assigned-criteriatag-list"
+				th:if="${criteriaTagObjectWrapper != null}"
+				th:object="${criteriaTagObjectWrapper}">
+				<div id="table-assignedRoleList">
+					<table class="table table-fixed ">
+						<thead>
+							<tr>
+								<th th:text="#{user.removecriteriatagdesc}" style="font-size: 14px;" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'">
+												<strong>Click Remove Button to remove a Criteria Tag</strong>
+								</th>
+							</tr>
+							<tr>
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width: 103.1%': 'float:left;width: 103.1%',
+							class=${#locale.language}=='ar'? 'bg-primary col-xs-2 text-right':'bg-primary col-xs-2 text-left'" th:text="#{user.availablecriteriatags}"><strong>Assigned
+										Criteria Tags </strong></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr
+								th:each="assignedCriteriaTagDTO : ${criteriaTagObjectWrapper.assignedCriteriaTagDTOList}"
+								th:object="${assignedCriteriaTagDTO}"
+								th:if="${not #lists.isEmpty(criteriaTagObjectWrapper.assignedCriteriaTagDTOList)}">
+								<td th:attr="class=${#locale.language}=='ar'? 'col-xs-11':'col-xs-11',style=${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4;width:100%':'border-left: 1px solid #cdd0d4;width:100%'"
+									th:text="*{tagNameEn}">Criteria Tag Name</td>
+								<td th:attr="style=${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4'" class="col-xs-1"><button
+										type="button"
+										th:attr="value=${assignedCriteriaTagDTO.criteriaTagId},id=${assignedCriteriaTagDTO.criteriaTagId}"
+										class="btn btn-danger"
+										onclick="modifyInMemoryCriteriaTagsForSingleUpdate(this.id,'remove')" th:text="#{user.remove}">Remove</button></td>
+							</tr>
+							<tr th:if="${not #lists.isEmpty(criteriaTagObjectWrapper.assignedCriteriaTagDTOList)}">
+								<td></td>
+							</tr>
+							<tr
+								th:if="${#lists.isEmpty(criteriaTagObjectWrapper.assignedCriteriaTagDTOList)}">
+								<td class="col-xs-12"><b>No Assigned Criteria Tags</b></td>
+							</tr>
+						</tbody>
+					</table>
+					<div></div>
+				</div>
+
+				<div align="center">
+					<button type="button" class="btn btn-success"
+						onclick="modifyInMemoryCriteriaTagsForBulkUpdate('add')" th:text="#{user.assignall}">Assign
+						All</button>
+					<button type="button" class="btn btn-danger"
+						onclick="modifyInMemoryCriteriaTagsForBulkUpdate('remove')" th:text="#{user.removeall}">Remove
+						All</button>
+					<button type="button" class="btn btn-primary"
+						onclick="saveCriteriaTagsChanges()" th:text="#{user.savechanges}">Save Changes</button>
+				</div>
+				<div class="linebreaker-lg"></div>
+				<div class="linebreaker-lg"></div>
+			</div>
+			
+			<div id="errorDivParent" class="row" th:if="${errorResponseDesc != null}" >
+					<div class="col-md-12" style="text-align: center;">
+						<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+							 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 	<img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+						</div>
+					</div>
+					<div class="linebreaker-lg"></div>
+					<div class="linebreaker-lg"></div>
+			</div>
+
+		</div>
+
+		
+		<div id="addupdatecriteriatag-updatedata-result-status"
+							th:fragment="addupdatecriteriatag-updatedata-result-status-frag">
+		
+			<div id="addupdatecriteriatagSuccessDivPanel" class="row" th:if="${updateCriteriaStatus != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div id="successDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: green;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/success.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>							
+						 <strong>
+						 <span class="text-success text-center" style="font-size: 15px" >Criteria Tag Changes Updated Successfully
+						 </span>
+						  </strong>
+					</div>
+				</div>
+			</div>
+			
+			<div id="errorDivParent" class="row" th:if="${updateUserRoleStatus == null and errorResponseDesc != null}" >
+					<div class="col-md-12" style="text-align: center;">
+						<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+							 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 	<img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+						</div>
+					</div>
+					<div class="linebreaker-lg"></div>
+					<div class="linebreaker-lg"></div>
+			</div>
+		
+
+		</div>
+
+
+
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" th:attr="dir=${#locale.language}=='ar' ? 'rtl' : 'ltr'" >
+<head th:replace="fragments/header">
+</head>
+<body>
+	<div th:replace="fragments/staticmenu :: staticmenu"
+		class="container-fluid"></div>
+
+	<div class="container">
+		<div class="form-group um-search-form" 
+			th:if="${rolePrivilegeListDTO != null and not #lists.isEmpty(rolePrivilegeListDTO.roleDTOList)}">
+			<div class="linebreaker-lg"></div>
+			<div id="english-locale-div" th:if="${#locale.language}=='en'">
+			<div class="row" >
+			<label for="Login Name"  th:attr="class= ${#locale.language}=='ar'? 'col-sm-2 control-label arabic' : 'col-sm-2 control-label'" th:text="#{user.selectrole}">Select
+				Role :</label>
+				<div class="col-sm-5">
+					<select class="form-control" id="roleIDSelector"
+						onchange="showLoadPrivilegeDiv()">
+						<option value="0" th:text="#{user.chooserole}">Choose Role</option>
+						<option th:each="roleDTO : ${rolePrivilegeListDTO.roleDTOList}"
+							th:value="${roleDTO.roleId}" th:text="${roleDTO.roleName}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="linebreaker-md"></div>
+			<div class="linebreaker-md"></div>
+			<div class="row" >
+				<div class="col-sm-2 control-label"></div>
+				<div class="col-sm-5" id="loadPrivilgeDiv" style="display: none;">
+					<button type="button" class="btn btn-primary"
+					onclick="loadPrivilege()" th:text="#{user.loadprivileges}">Load Privileges</button>
+				</div>
+			</div>
+			</div>
+			
+			<div id="arab-locale-div" th:if="${#locale.language}=='ar'">
+			<div class="row" >
+				<div class="col-sm-5 control-label" ></div>
+				<div class="col-sm-5">
+					<select class="form-control arabic" id="roleIDSelector"
+						onchange="showLoadPrivilegeDiv()">
+						<option value="0" th:text="#{user.chooserole}">Choose Role</option>
+						<option th:each="roleDTO : ${rolePrivilegeListDTO.roleDTOList}"
+						th:value="${roleDTO.roleId}" th:text="${roleDTO.roleName}"></option>
+					</select>
+				</div>
+			<label for="Login Name"  th:attr="class= ${#locale.language}=='ar'? 'col-sm-2 control-label arabic' : 'col-sm-2 control-label'" th:text="#{user.selectrole}">Select
+				Role :</label>
+			</div>
+			<div class="linebreaker-md"></div>
+			<div class="linebreaker-md"></div>
+			<div class="row" >
+					<div class="col-sm-5 control-label" ></div>
+					<div class="col-sm-5" id="loadPrivilgeDiv" style="display: none;">
+						<button type="button" class="btn btn-primary"
+						onclick="loadPrivilege()" th:text="#{user.loadprivileges}">Load Privileges</button>
+					</div>
+			</div>
+			</div>
+			
+			
+		</div>
+		<div id="errorDivParent" class="row" th:if="${ errorResponseDesc != null}" >
+			<div class="linebreaker-lg"></div>
+			<div class="linebreaker-lg"></div>		
+			<div class="col-md-12" style="text-align: center;">	
+				<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+					 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+						<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+						</span> </strong>
+				</div>
+			</div>
+		</div>
+		<div class="linebreaker-lg"></div>
+		<div class="linebreaker-lg"></div>
+
+		<div id="show-associated-role-list"
+			th:fragment="show-associated-roles-frag">
+			<div id="show-assigned-role-details-div"
+				th:if="${matchedRoleDTOList != null}"
+				th:object="${matchedRoleDTOList}">
+				<div id="table-completeRoleList">
+					<table class="table table-fixed ">
+						<thead>
+							<tr>
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width: 103.1%;font-size: 15px': 'float:left;width: 103.1%;font-size: 15px',
+							class=${#locale.language}=='ar'? 'bg-primary col-xs-2 text-right':'bg-primary col-xs-2 text-left'" th:text="#{user.associatedrole}"><strong>Associated
+										Roles </strong></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="associatedRoleDTO : ${matchedRoleDTOList}"
+								th:object="${associatedRoleDTO}"
+								th:if="${not #lists.isEmpty(matchedRoleDTOList)}">
+								<td th:attr="style=${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4;width:100%':'border-left: 1px solid #cdd0d4;width:100%'"
+								  class="col-xs-11" th:text="*{roleName}">Role Name</td>
+								<td th:attr="style=${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4;width:100%':'border-right: 1px solid #cdd0d4;width:100%'"
+									class="col-xs-1"></td>
+							</tr>
+							<tr th:if="${not #lists.isEmpty(matchedRoleDTOList)}">
+								<td></td>
+							</tr>
+							<tr th:if="${#lists.isEmpty(matchedRoleDTOList)}">
+								<td class="col-xs-12"><b>No Matched Roles</b></td>
+							</tr>
+
+						</tbody>
+					</table>
+
+				</div>
+				
+			</div>
+			
+			<div id="noResultDivParent" class="row" th:if="${ #lists.isEmpty(matchedRoleDTOList) and warnResponseDesc != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div  id="noResultDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: yellow;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/warning.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+						 <strong><span th:utext="${warnResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+						 </span> </strong>
+					</div>
+				</div>
+				<div class="linebreaker-lg"></div>
+				<div class="linebreaker-lg"></div>
+			</div>
+			<div id="errorDivParent" class="row" th:if="${ #lists.isEmpty(matchedRoleDTOList) and errorResponseDesc != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					 	<img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+						<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+						</span> </strong>
+					</div>
+				</div>
+				<div class="linebreaker-lg"></div>
+				<div class="linebreaker-lg"></div>
+			</div>
+			
+		</div>
+
+
+		<div id="show-privilege-list" th:fragment="show-privilege-list-frag">
+
+			<div id="show-unassigned-privilege-list"
+				th:if="${privilegeDTOHolder != null}"
+				th:object="${privilegeDTOHolder}">
+				<div id="table-completeRoleList">
+					<table class="table table-fixed ">
+						<thead>
+							<tr>
+								<th th:text="#{user.chooseaddprivilegedesc}" style="font-size: 14px;" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'">
+										<strong>Click Assign Button to add a privilege</strong>
+								</th>
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width: 103.1%;font-size: 15px': 'float:left;width: 103.1%;font-size: 15px',
+							class=${#locale.language}=='ar'? 'bg-primary col-xs-2 text-right':'bg-primary col-xs-2 text-left'" th:text="#{user.availableprivileges}"><strong>Available
+										Privileges </strong></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr
+								th:each="unassignedPrivilegDTO : ${privilegeDTOHolder.unassignedPrivilegDTOList}"
+								th:object="${unassignedPrivilegDTO}"
+								th:if="${not #lists.isEmpty(privilegeDTOHolder.unassignedPrivilegDTOList)}">
+								<td th:attr="class=${#locale.language}=='ar'? 'col-xs-11':'col-xs-11',style=${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4;width:100%':'border-left: 1px solid #cdd0d4;width:100%',
+								value=${unassignedPrivilegDTO.privilegeId},id=${unassignedPrivilegDTO.privilegeId}"
+									th:text="*{privilegeNameEn}"									
+									onclick="fetchassociatedRoles(this.id)">Privilege Name</td>
+								<td th:attr="style=${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4'" class="col-xs-1"><button
+										type="button"
+										th:attr="value=${unassignedPrivilegDTO.privilegeId},id=${unassignedPrivilegDTO.privilegeId}"
+										class="btn btn-success"
+										onclick="modifyInMemoryPrivilegeDetailsForSingleUpdate(this.id,'add')" th:text="#{user.assign}">Assign</button></td>
+							</tr>
+							<tr th:if="${not #lists.isEmpty(privilegeDTOHolder.unassignedPrivilegDTOList)}">
+								<td></td>
+							</tr>
+							<tr
+								th:if="${#lists.isEmpty(privilegeDTOHolder.unassignedPrivilegDTOList)}">
+								<td class="col-xs-12"><b>No Available Privileges</b></td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+				<div class="linebreaker-lg"></div>
+			</div>
+
+
+			<div id="show-assigned-privilege-list"
+				th:if="${privilegeDTOHolder != null}"
+				th:object="${privilegeDTOHolder}">
+				<div id="table-assignedRoleList">
+					<table class="table table-fixed ">
+						<thead>
+							<tr>
+								<th th:text="#{user.chooseremoveprivilegedesc}" style="font-size: 14px;" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'">
+										<strong>Click Remove Button to remove a privilege</strong>
+								</th>
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width: 103.1%;font-size: 15px': 'float:left;width: 103.1%;font-size: 15px',
+							class=${#locale.language}=='ar'? 'bg-primary col-xs-2 text-right':'bg-primary col-xs-2 text-left'" th:text="#{user.assignedprivilege}"><strong>Assigned
+										Privileges </strong></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr
+								th:each="assignedPrivilegDTO : ${privilegeDTOHolder.roleAssignedPrivilegDTOList}"
+								th:object="${assignedPrivilegDTO}"
+								th:if="${not #lists.isEmpty(privilegeDTOHolder.roleAssignedPrivilegDTOList)}">
+								<td 
+								th:attr="class=${#locale.language}=='ar'? 'col-xs-11':'col-xs-11',style=${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4;width:100%':'border-left: 1px solid #cdd0d4;width:100%'"
+									th:text="*{privilegeNameEn}">Role Name</td>
+								<td th:attr="style=${#locale.language}=='ar'? 'border-left: 1px solid #cdd0d4':'border-right: 1px solid #cdd0d4'" class="col-xs-1"><button
+										type="button"
+										th:attr="value=${assignedPrivilegDTO.privilegeId},id=${assignedPrivilegDTO.privilegeId}"
+										class="btn btn-danger"
+										onclick="modifyInMemoryPrivilegeDetailsForSingleUpdate(this.id,'remove')" th:text="#{user.remove}">Remove</button></td>
+							</tr>
+							<tr th:if="${not #lists.isEmpty(privilegeDTOHolder.roleAssignedPrivilegDTOList)}">
+								<td></td>
+							</tr>
+							<tr
+								th:if="${#lists.isEmpty(privilegeDTOHolder.roleAssignedPrivilegDTOList)}">
+								<td class="col-xs-12"><b>No Assigned Privileges</b></td>
+							</tr>
+						</tbody>
+					</table>
+					<div></div>
+				</div>
+				
+				<div class="linebreaker-md"></div>
+
+				<div align="center">
+					<button type="button" class="btn btn-success"
+						onclick="modifyInMemoryPrivilegeDetailsForBulkUpdate('add')" th:text="#{user.assignall}">Assign
+						All</button>
+					<button type="button" class="btn btn-danger"
+						onclick="modifyInMemoryPrivilegeDetailsForBulkUpdate('remove')" th:text="#{user.removeall}">Remove
+						All</button>
+					<button type="button" class="btn btn-primary"
+						onclick="savePrivilegeRoleChanges()" th:text="#{user.savechanges}">Save Changes</button>
+				</div>
+				<div class="linebreaker-lg"></div>
+				<div class="linebreaker-lg"></div>
+			</div>
+
+
+		</div>
+		
+		
+		<div id="addupdateroleprivileges-updatedata-result-status"
+							th:fragment="addupdateuserrole-updatedata-result-status-frag">
+		
+			<div id="updateRolePrivilegeSuccessDivPanel" class="row" th:if="${updateUserRoleStatus != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div id="successDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: green;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/success.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>							
+						 <strong>
+						 <span class="text-success text-center" style="font-size: 15px" >User Roles Updated Successfully
+						 </span>
+						  </strong>
+					</div>
+				</div>
+			</div>
+			
+			<div id="errorDivParent" class="row" th:if="${updateUserRoleStatus == null and errorResponseDesc != null}" >
+					<div class="col-md-12" style="text-align: center;">
+						<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+							 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 	<img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+						</div>
+					</div>
+					<div class="linebreaker-lg"></div>
+					<div class="linebreaker-lg"></div>
+			</div>
+		
+
+		</div>
+		
+		
+	</div>
+</body>
+</html>

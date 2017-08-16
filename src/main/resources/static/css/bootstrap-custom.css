@@ -1,0 +1,26 @@
+.navbar-custom {
+    color: #FFFFFF;
+    background-color: #337ab7;
+}
+.navbar-brand,
+.navbar-nav li a {
+    line-height: 70px;
+    height: 70px;
+    padding-top: 0;
+}
+.li-class-grey{
+	color:   #aeb6bf  ;
+	background-color:   #aeb6bf  ;
+}
+.li-class-light-grey{
+	color:  #ebedef  ;
+	background-color: #ebedef;
+}
+.li-class-blue{
+	color:    #d4e6f1  ;
+	background-color:    #d4e6f1  ;
+}
+
+.a-class{
+	color:    #17202a ;
+}

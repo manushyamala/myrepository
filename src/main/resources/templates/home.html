@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" th:attr="dir=${#locale.language}=='ar' ? 'rtl' : 'ltr'" >
+<head th:replace="fragments/header">
+</head>
+<body>
+	<div th:replace="fragments/staticmenu :: staticmenu"
+		class="container-fluid"></div>
+
+		<div id="welcome-messsage-div" th:if="${session.userName != null}" class="container">
+			<div class="linebreaker-md"></div>
+			<h4>
+				<span th:text="#{user.welcome}+','">Welcome, </span><span th:utext="${session.userName}">User</span>
+			</h4>
+			<blockquote th:attr="style= ${#locale.language}=='ar'? 'float:right' : ''">
+				<p style="font-size: 16px;" th:text="#{user.welcomedesc}"><Strong>Please proceed by choosing any of the above link.</Strong></p>
+			</blockquote>
+		</div>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="carousel slide" id="carousel-176804">
+				<ol class="carousel-indicators">
+					<li data-slide-to="0" data-target="#carousel-176804">
+					</li>
+					<li data-slide-to="1" data-target="#carousel-176804" class="active">
+					</li>
+					<li data-slide-to="2" data-target="#carousel-176804">
+					</li>
+				</ol>
+				<div class="carousel-inner">
+					<div class="item">
+						<img alt="Carousel Bootstrap First" src="img/carousel-img1.jpg" />
+						<div class="carousel-caption">
+							<h4>
+								
+							</h4>
+							<p>
+								
+							</p>
+						</div>
+					</div>
+					<div class="item active">
+						<img alt="Carousel Bootstrap Second" src="img/carousel-img2.jpg" />
+						<div class="carousel-caption">
+							<h4>
+								
+							</h4>
+							<p>
+								
+							</p>
+						</div>
+					</div>
+					<div class="item">
+						<img alt="Carousel Bootstrap Third" src="img/carousel-img3.jpg" />
+						<div class="carousel-caption">
+							<h4>
+								
+							</h4>
+							<p>
+								
+							</p>
+						</div>
+					</div>
+				</div> <a class="left carousel-control" href="#carousel-176804" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a> <a class="right carousel-control" href="#carousel-176804" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

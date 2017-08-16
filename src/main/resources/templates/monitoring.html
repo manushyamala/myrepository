@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header">
+</head>
+<!-- Progress bar related js and css -->
+<link href="../static/css/monitoring.css"
+	th:href="@{css/monitoring.css}" rel="stylesheet" />
+<script src="../static/js/bootstrap-progressbar.js"
+	th:src="@{js/bootstrap-progressbar.js}"></script>
+<body>
+	<div th:replace="fragments/staticmenu :: staticmenu"
+		class="container-fluid"></div>
+	<div class="container-fluid">
+		<div class="row">
+			<div>
+				<ul class="nav nav-pills nav-justified ">
+					<li class="li-class-light-grey"><a href="configuration"><strong>Configuration</strong></a></li>
+					<li class="active"><a href="monitoring"><strong>Monitoring</strong></a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div>&nbsp;</div>
+		<div>&nbsp;</div>
+		<div id="view-application-monitoring-details"
+			th:if="${applicationMonitoringDTO != null}"
+			th:object="${applicationMonitoringDTO}">
+			<input type="hidden" name="currentHeapSize"
+				th:value="*{currentHeapSize}" /> <input type="hidden"
+				name="maxHeapSize" th:value="*{maxHeapSize}" /> <input
+				type="hidden" name="committedHeapSize"
+				th:value="*{committedHeapSize}" /> <input type="hidden"
+				id="initHeapSize" name="initHeapSize" th:value="*{initHeapSize}" />
+			<input type="hidden" id="percentageHeapSizeUsed"
+				name="percentageHeapSizeUsed" th:value="*{percentageHeapSizeUsed}" />
+
+			<input type="hidden" name="totalStartedThreadCount"
+				th:value="*{totalStartedThreadCount}" /> <input type="hidden"
+				name="peakThreadCount" th:value="*{peakThreadCount}" /> <input
+				type="hidden" name="threadCount" th:value="*{threadCount}" /> <input
+				type="hidden" id="percentageThreadUsage"
+				name="percentageThreadUsage" th:value="*{percentageThreadUsage}" />
+
+
+			<input type="hidden" name="totalSwapSpace"
+				th:value="*{totalSwapSpace}" /> <input type="hidden"
+				name="freeSwapSpace" th:value="*{freeSwapSpace}" /> <input
+				type="hidden" id="percentageSwapSpaceUsed"
+				name="percentageSwapSpaceUsed" th:value="*{percentageSwapSpaceUsed}" />
+			<input type="hidden" name="totalPhysicalMemory"
+				th:value="*{totalPhysicalMemory}" /> <input type="hidden"
+				name="freePhysicalMemory" th:value="*{freePhysicalMemory}" /> <input
+				type="hidden" id="percentageMemoryUsed" name="percentageMemoryUsed"
+				th:value="*{percentageMemoryUsed}" /> <input type="hidden"
+				name="percentageheapMemoryBeforeGC"
+				id="percentageheapMemoryBeforeGC"
+				th:value="*{percentageMemoryUsedBeforeGC}" /> <input type="hidden"
+				id="percentageheapMemoryAfterGC" name="percentageheapMemoryAfterGC"
+				th:value="*{percentageMemoryUsedAfterGC}" />
+
+
+			<div id="mytableid">
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="bg-primary"
+								style="border-left: 1px solid #cdd0d4; text-align: center; padding: 1px"
+								width="22%"><h4>Application Server Stats</h4></th>
+							<th width="78%"></th>
+						</tr>
+						<tr>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border"></td>
+						</tr>
+						<tr></tr>
+						<tr></tr>
+						<tr>
+							<td class="td-no-border"><b>Heap Memory Usage : </b></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"><div
+									id="memoryusage" class="progress-bar" data-transitiongoal="0"
+									th:text="*{percentageHeapSizeUsed+'%'}">0%</div> <i><span
+									style="float: left;"
+									th:text=" *{currentHeapSize/1000000 + ' MB'}">0</span></i><i><span
+									style="float: right;" th:text="*{maxHeapSize/1000000 + ' MB'}">0</span></i></td>
+						</tr>
+
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"><b>Thread Usage : </b></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"><div
+									id="threadstats" class="progress-bar" data-transitiongoal="0"
+									th:text="*{percentageThreadUsage+'%'}">0%</div> <i><span
+									style="float: left;" th:text=" *{threadCount}">0</span></i><i><span
+									style="float: right;" th:text="*{totalStartedThreadCount}">0</span></i></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<br /> <br />
+			<div id="mytableid1">
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="bg-primary"
+								style="border-left: 1px solid #cdd0d4; text-align: center; padding: 1px"
+								width="22%"><h4>Physical Server Stats</h4></th>
+							<th width="78%"></th>
+						</tr>
+						<tr>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border"></td>
+						</tr>
+						<tr></tr>
+						<tr></tr>
+
+						<tr>
+							<td class="td-no-border"><b>Physical Memory Usage : </b></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"><div
+									id="physicalmemory" class="progress-bar"
+									data-transitiongoal="0" th:text="*{percentageMemoryUsed+'%'}">0%</div>
+								<div id="right-aligned-div"
+									th:if="${applicationMonitoringDTO.percentageMemoryUsed &gt; 85}">
+									<i><span style="float: right;"
+										th:text="*{totalPhysicalMemory/1000000 + ' MB'}">0</span></i> <i><span
+										style="float: right;"
+										th:text=" *{(totalPhysicalMemory-freePhysicalMemory)/1000000 +'MB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}">0</span></i>
+								</div>
+								<div id="combined-aligned-div"
+									th:if="${applicationMonitoringDTO.percentageMemoryUsed &lt; 86}">
+									<i><span style="float: left;"
+										th:text=" *{(totalPhysicalMemory-freePhysicalMemory)/1000000 + ' MB'}">0</span></i>
+									<i><span style="float: right;"
+										th:text="*{totalPhysicalMemory/1000000 + ' MB'}">0</span></i>
+								</div></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+
+						<tr>
+							<td class="td-no-border"><b>Swap Usage : </b></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"><div
+									id="swapusage" class="progress-bar" data-transitiongoal="0"
+									th:text="*{percentageSwapSpaceUsed+'%'}">0%</div> <i><span
+									style="float: left;"
+									th:text=" *{(totalSwapSpace-freeSwapSpace)/1000000 + ' MB'}">0</span></i><i><span
+									style="float: right;"
+									th:text="*{totalSwapSpace/1000000 + ' MB'}">0</span></i></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<br /> <br />
+			<div id="mytableid2">
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="bg-primary"
+								style="border-left: 1px solid #cdd0d4; text-align: center; padding: 1px"
+								width="22%"><h4>Garbage Collection Stats</h4></th>
+							<th width="78%"></th>
+						</tr>
+						<tr>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border"></td>
+						</tr>
+						<tr></tr>
+						<tr></tr>
+
+						<tr>
+							<td class="td-no-border"><b>Memory Usage Before GC : </b></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"><div
+									id="heapmemorybeforegc" class="progress-bar"
+									data-transitiongoal="0"
+									th:text="*{percentageMemoryUsedBeforeGC+'%'}">0%</div>
+								<div id="right-aligned-div"
+									th:if="${applicationMonitoringDTO.percentageMemoryUsedBeforeGC &gt; 85}">
+									<i><span style="float: right;"
+										th:text="*{maxMemoryBeforeGC/1000000 + ' MB'}">0</span></i> <i><span
+										style="float: right;"
+										th:text=" *{(usedMemoryBeforeGC)/1000000 +'MB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}">0</span></i>
+								</div>
+								<div id="combined-aligned-div"
+									th:if="${applicationMonitoringDTO.percentageMemoryUsedBeforeGC &lt; 86}">
+									<i><span style="float: left;"
+										th:text=" *{(usedMemoryBeforeGC)/1000000 + ' MB'}">0</span></i> <i><span
+										style="float: right;"
+										th:text="*{maxMemoryBeforeGC/1000000 + ' MB'}">0</span></i>
+								</div></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+
+						<tr>
+							<td class="td-no-border"><b>Memory Usage After GC : </b></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"><div
+									id="heapmemoryaftergc" class="progress-bar"
+									data-transitiongoal="0"
+									th:text="*{percentageMemoryUsedAfterGC+'%'}">0%</div> <i><span
+									style="float: left;"
+									th:text=" *{(usedMemoryAfterGC)/1000000 + ' MB'}">0</span></i><i><span
+									style="float: right;"
+									th:text="*{maxMemoryAfterGC/1000000 + ' MB'}">0</span></i></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+
+						<tr>
+							<td class="td-no-border"><b>GC Count : </b></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"><i><span
+									style="float: left;" th:text="*{gcCount}">0</span></i></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+
+
+						<tr>
+							<td class="td-no-border"><b>GC Duration : </b></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"><i><span
+									style="float: left;" th:text="*{gcExecutionTime + ' Seconds'}">0</span></i></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+
+
+					</tbody>
+				</table>
+			</div>
+			<br /> <br />
+			<div id="mytableid3">
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="bg-primary"
+								style="border-left: 1px solid #cdd0d4; text-align: center; padding: 1px"
+								width="22%"><h4>App Server Config</h4></th>
+							<th width="78%"></th>
+						</tr>
+						<tr>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border"></td>
+						</tr>
+						<tr></tr>
+						<tr></tr>
+
+						<tr height="100">
+							<td height="100" class="td-no-border"><b>Library Path :
+							</b></td>
+							<td height="100" class="break-line" th:text="*{libraryPath}"><i>
+							</i></td>
+						</tr>
+
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"><b>Boot Class Path : </b></td>
+							<td height="100" class="break-line" th:text="*{bootClassPath}"><i>
+							</i></td>
+						</tr>
+
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"><b>Sever Name : </b></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"><i><span
+									style="float: left;" th:text="*{serverName}">0</span></i></td>
+						</tr>
+
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"><b>Server Uptime : </b></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"><i><span
+									style="float: left;" th:text="*{uptime+ ' Hrs'}">0</span></i></td>
+						</tr>
+
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"><b>VM Name : </b></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"><i><span
+									style="float: left;" th:text="*{vmname}">0</span></i></td>
+						</tr>
+
+						<tr>
+							<td class="td-no-border"></td>
+							<td class="td-no-border" bgcolor="#f8f9f9"></td>
+						</tr>
+						<tr>
+							<td class="td-no-border"><b>VM Arguments : </b></td>
+							<td class="td-no-border" bgcolor="#f8f9f9">
+								<div
+									th:each="vmargumentObj : ${applicationMonitoringDTO.vmArgumentList}"
+									th:object="${vmargumentObj}">
+									<i><span style="float: left;" th:text="${vmargumentObj}">0</span></i><br />
+								</div>
+							</td>
+
+						</tr>
+					</tbody>
+
+				</table>
+			</div>
+
+
+		</div>
+
+	</div>
+</body>
+<script>
+	$(document).ready(
+			function() {
+
+				$('#memoryusage')
+						.attr(
+								'class',
+								retrieveBackgroundClassName($(
+										'#percentageHeapSizeUsed').val()));
+				$('#memoryusage').attr('data-transitiongoal',
+						$('#percentageHeapSizeUsed').val());
+				$('#memoryusage').progressbar();
+
+				$('#threadstats').attr(
+						'class',
+						retrieveBackgroundClassName($('#percentageThreadUsage')
+								.val()));
+				$('#threadstats').attr('data-transitiongoal',
+						$('#percentageThreadUsage').val());
+				$('#threadstats').progressbar();
+
+				$('#swapusage').attr(
+						'class',
+						retrieveBackgroundClassName($(
+								'#percentageSwapSpaceUsed').val()));
+				$('#swapusage').attr('data-transitiongoal',
+						$('#percentageSwapSpaceUsed').val());
+				$('#swapusage').progressbar();
+
+				$('#physicalmemory').attr(
+						'class',
+						retrieveBackgroundClassName($('#percentageMemoryUsed')
+								.val()));
+				$('#physicalmemory').attr('data-transitiongoal',
+						$('#percentageMemoryUsed').val());
+				$('#physicalmemory').progressbar();
+
+				$('#heapmemorybeforegc').attr(
+						'class',
+						retrieveBackgroundClassName($(
+								'#percentageheapMemoryBeforeGC').val()));
+				$('#heapmemorybeforegc').attr('data-transitiongoal',
+						$('#percentageheapMemoryBeforeGC').val());
+				$('#heapmemorybeforegc').progressbar();
+
+				$('#heapmemoryaftergc').attr(
+						'class',
+						retrieveBackgroundClassName($(
+								'#percentageheapMemoryAfterGC').val()));
+				$('#heapmemoryaftergc').attr('data-transitiongoal',
+						$('#percentageheapMemoryAfterGC').val());
+				$('#heapmemoryaftergc').progressbar();
+
+			});
+</script>
+</html>

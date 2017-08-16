@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" th:attr="dir=${#locale.language}=='ar' ? 'rtl' : 'ltr'">
+<head th:replace="fragments/header">
+</head>
+<body>
+	<div th:replace="fragments/staticmenu :: staticmenu"
+		class="container-fluid"></div>
+
+	<div class="container">
+		<div id="errorDiv"></div>
+		<div id="manageusergroup-form-load-div"
+			th:fragment="manageusergroup-form-load-frag">
+			<div id="manageusergroup-form-data-div" th:if="${manageUserGroupDTO != null}">
+				<form class="form-horizontal" role="form"
+					id="manage-usergroup-search-form" th:object="${manageUserGroupDTO}"
+					method="post">
+					<div class="um-search-form">
+						<div class="form-group up-form-group">
+							<label for="group-Name-en" class="col-sm-2 control-label" 
+									th:attr="style=${#locale.language}=='ar'? 'text-align: right':'text-align: left'" th:text="#{user.groupnameen}">Group
+								Name(En)</label> <input type="text" th:field="*{groupNameEn}"
+								class="form-control" id="groupNameEn" th:attr="placeholder=#{user.groupnameen}" />
+						</div>
+						<div class="form-group up-form-group">
+							<label for="group-Name-ar" class="col-sm-2 control-label" 
+								th:attr="style=${#locale.language}=='ar'? 'text-align: right':'text-align: left'" th:text="#{user.groupnamear}">Group Name(Ar)
+							</label> <input type="text" th:field="*{groupNameAr}"
+								class="form-control" id="groupNameAr"
+								th:attr="placeholder=#{user.groupnamear}" />
+								<input type="hidden"
+								id="selectedUserGroupID" th:field="*{selectedUserGroupID}" th:value="${manageUserGroupDTO.selectedUserGroupID}" />
+						</div>
+						<div class="form-group up-form-group">
+							<label for="Department" class="col-sm-2 control-label" 
+								th:attr="style=${#locale.language}=='ar'? 'text-align: right':'text-align: left'" th:text="#{user.selectrolegroup}">Select Role Group</label>
+							<select class="form-control" id="roleGroupID" th:field="*{roleGroupID}">
+								<option th:if="${manageUserGroupDTO.roleGroupID == 0}" value="0"  th:text="#{user.selectrolegroup}">Choose
+									Role Group</option>
+								<option th:if="${manageUserGroupDTO.roleGroupID != 0}"
+									th:value="${manageUserGroupDTO.roleGroupID}"   
+									th:text="#{user.selectrolegroup}">Choose
+									Role Group</option>
+								<option th:each="roleGroupDTO : ${manageUserGroupWrapperDTO.roleGroups}" th:if="${not #lists.isEmpty(manageUserGroupWrapperDTO.roleGroups)}"
+									th:value="${roleGroupDTO.roleGroupId}" 
+									th:text="${roleGroupDTO.nameEn}"></option>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10"></div>
+						</div>
+						
+						
+						<div class="form-group up-form-group">
+							<label for="name-en" class="col-sm-2 control-label" 
+									th:attr="style=${#locale.language}=='ar'? 'text-align: right':'text-align: left'" th:text="#{user.usergroupname}">
+								Name</label> <input type="text" 
+								class="form-control" id="name" th:attr="placeholder=#{user.usergroupname}" />
+						</div>
+						<div class="form-group up-form-group">
+							<label for="user-name" class="col-sm-2 control-label" 
+									th:attr="style=${#locale.language}=='ar'? 'text-align: right':'text-align: left'"  th:text="#{user.groupusername}">User Name
+							</label> <input type="text" 
+								class="form-control" id="userName"
+								 th:attr="placeholder=#{user.groupusername}" />
+						</div>
+						<div class="form-group up-form-group">
+							<label for="mobile-no" class="col-sm-2 control-label" 
+									th:attr="style=${#locale.language}=='ar'? 'text-align: right':'text-align: left'" th:text="#{user.mobileNo}">Mobile No
+							</label> <input type="text" 
+								class="form-control" id="mobileNo"
+								 th:attr="placeholder=#{user.mobileNo}" />
+						</div>
+						<div class="linebreaker-md"></div>
+						<div class="form-group up-form-group">
+								<div class="col-sm-10" ></div>
+						</div>
+						<div class="form-group up-form-group" style="text-align: center;">
+							<button type="button" id="search-button" class="btn btn-danger" onclick="searchManageUserrGroupUsers()" 
+							th:text="#{user.searchuser}">Search User</button>
+						</div>
+
+					</div>
+			
+					<div class="linebreaker-lg"></div>
+					<div class="linebreaker-lg"></div>
+
+					<div id="manageusergroup-appuser-list"
+						th:fragment="manageusergroup-appuser-list-frag">
+
+						<div id="manageusergroup-appuser-list-result"
+							th:if="${not #lists.isEmpty(appUserList)}" >
+							<div id="privilegetableid">
+								<table class="table table-fixed ">
+									<thead>
+										<tr style="width:103.1%">											
+											<th th:text="#{user.addrolemanageusergroupdesc}" style="font-size: 14px;" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'">
+												<strong>Click Action Checkbox to add a Role</strong>
+											</th>
+										</tr>
+										<tr style="width:103.1%">											
+											<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:20%;font-size: 15px': 'float:left;width:20%;font-size: 15px',
+											class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.rolename}"><strong>Full Name English</strong></th>
+											<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:20%;font-size: 15px': 'float:left;width:20%;font-size: 15px',
+											class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.roledescen}"><strong>Full Name Arabic</strong></th>
+											<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:20%;font-size: 15px': 'float:left;width:20%;font-size: 15px',
+											class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.roledescar}"><strong>Login Name</strong></th>
+											<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:15%;font-size: 15px': 'float:left;width:15%;font-size: 15px',
+											class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.roleactive}"><strong>Mobile No</strong></th>
+											<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:15%;font-size: 15px': 'float:left;width:15%;font-size: 15px',
+											class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.roleactive}"><strong>User Group</strong></th>
+											<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:10%;font-size: 15px': 'float:left;width:10%;font-size: 15px',
+											class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.roleaction}"><strong>Action</strong></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="applicationUserDTO : ${appUserList}" style="width:100%;display: -webkit-box">
+											<td th:attr="style=${#locale.language}=='ar'? 'width:20%;border-right: 1px solid #cdd0d4':'width:20%;border-left: 1px solid #cdd0d4'" th:text="${applicationUserDTO.fullNameEn}">Full Name English</td>
+											<td style="width:20%" th:text="${applicationUserDTO.fullNameAr}">Full Name Arabic</td>
+											<td style="width:20%" th:text="${applicationUserDTO.userLogin}">Login Name</td>
+											<td style="width:15%" th:text="${applicationUserDTO.mobileNo}">Mobile No</td>
+											<td style="width:15%" th:text="${applicationUserDTO.mobileNo}">User Group</td>
+											<td th:attr="style=${#locale.language}=='ar'? 'width:10%;padding-right: 20px':'width:10%;padding-left: 30px' " >
+												<input type="checkbox" name="selectedUserGroupID"
+												th:attr="value=${applicationUserDTO.userId}" 
+												th:checked="${applicationUserDTO.selected}" th:name="appUserIDList" />
+											</td>											
+										</tr>	
+										<tr>
+											<td></td>
+										</tr>								
+									</tbody>
+								</table>
+
+							</div>
+							<div class="linebreaker-lg"></div>
+						</div>
+						
+					<div id="errorDivParent" class="row" th:if="${ errorResponseDesc != null}" >
+					<div class="linebreaker-lg"></div>
+						<div class="linebreaker-lg"></div>		
+						<div class="col-md-12" style="text-align: center;">	
+							 <div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+							 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+							 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+					</div>
+				</div>
+				</div>
+			<div id="noResultDivParent" class="row" th:if="${ warnResponseDesc != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div  id="noResultDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: yellow;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/warning.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${warnResponseDesc}" class="text-warning text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+					</div>
+				</div>
+			</div>
+			
+		
+			<div id="save-cancel-buttonid" style="text-align: center;" th:if="${not #lists.isEmpty(appUserList)}" >
+						<button type="button" id="save-button" class="btn btn-success"
+							onclick="saveManageUserGroupChanges()" th:text="#{user.save}"
+							>Save</button>
+						<button type="button" class="btn btn-danger"  th:text="#{user.reset}"
+							>Reset</button>
+					<div class="linebreaker-lg"></div>
+			</div>
+						
+			</div>
+			</form>
+			</div>
+		</div>
+
+		
+		<div id="manageusergroup-updatedata-status"
+						th:fragment="manageusergroup-updatedata-status-frag">
+			<div id="updatemanageusergroupuccessDivPanel" class="row" th:if="${updateManageUserGroupStatus != null}" >
+				<div class="col-md-12" style="text-align: center;">
+					<div id="successDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: green;">
+						 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						 <img src="img/success.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>							
+						 <strong>
+						 <span class="text-success text-center" style="font-size: 15px" >User Group Details Updated Successfully
+					 	</span>
+					 	</strong>
+					</div>
+				</div>
+			</div>
+			<div id="errorDivParent" class="row" th:if="${ errorResponseDesc != null}" >
+					<div class="linebreaker-lg"></div>
+						<div class="linebreaker-lg"></div>		
+						<div class="col-md-12" style="text-align: center;">	
+							 <div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+							 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+							 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+							<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+							</span> </strong>
+						</div>
+					</div>
+			</div>
+			
+			
+		</div>
+		
+		<div class="linebreaker-lg"></div>
+		<div id="manageusergroup-role-list"
+			th:fragment="manageusergroup-role-list-frag">
+			<div id="manageusergroup-role-list-results"
+				th:if="${not #lists.isEmpty(manageUserGroupWrapperDTO.userGroups)}">
+				<div id="roletableid">
+					<table class="table table-fixed">
+						<thead>
+							<tr style="width:103.1%">
+								<th th:text="#{user.modifyusergroupdesc}" style="font-size: 14px;" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'">
+												<strong>Click Edit Button to modify a User Group</strong>
+								</th>
+							</tr>
+							<tr style="width:103.1%">
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:30%;font-size: 15px': 'float:left;width:30%;font-size: 15px',
+											class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.groupnameen}"><strong>Group Name(En)</strong></th>
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:30%;font-size: 15px': 'float:left;width:30%;font-size: 15px',
+											class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.groupnamear}"><strong>Group Name(Ar)</strong></th>
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:20%;font-size: 15px': 'float:left;width:20%;font-size: 15px',
+											class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.rolegroup}"><strong>Role Group</strong></th>								
+								<th th:attr="style=${#locale.language}=='ar'? 'float:right;width:20%;text-align: center;center;padding-left: 30px;font-size: 15px': 'float:left;width:20%;text-align: center;padding-right: 30px;font-size: 15px',
+											class=${#locale.language}=='ar'? 'bg-primary text-right':'bg-primary text-left'" th:text="#{user.roleaction}"><strong>Action</strong></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="userGroupDTO : ${manageUserGroupWrapperDTO.userGroups}"
+								th:object="${userGroupDTO}" style="width:100%;display: -webkit-box">
+								<td th:attr="style=${#locale.language}=='ar'? 'width:30%;border-right: 1px solid #cdd0d4':'width:30%;border-left: 1px solid #cdd0d4'" 
+									th:text="*{nameEn}">UserGroup Name En</td>
+								<td style="width:30%" th:text="*{nameAr}">UserGroup Name Ar</td>
+								<td style="width:20%" th:text="*{roleGroup.nameEn}">Role Group</td>
+								<td style="width:20%;text-align: center" class="text-right"><button type="button"
+										class="btn btn-success"
+										th:attr="value=${userGroupDTO.userGroupId},id=${userGroupDTO.userGroupId}"
+										onclick="loadSelectedUserGroupDetails(this.id)" th:text="#{user.roleedit}">Edit</button></td>
+							</tr>
+							<tr>
+								<td></td>
+							</tr>	
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+
+
+
+
+		</div>
+		<div class="linebreaker-lg"></div>
+		<div class="linebreaker-lg"></div>
+
+		<!--
+    <div id="manageuser-updatedata-status" th:fragment="manageuser-updatedata-status-frag" >
+    
+        <div id="updateUserSuccessDivPanel" th:if="${updateUserStatus != null}" >
+        <div id="noResultDiv" class="jumbotron">
+        <h2>User Details Updated Successfully</h2>
+        </div>
+        </div>
+    
+    </div>
+    
+    -->
+
+	</div>
+
+</body>
+</html>

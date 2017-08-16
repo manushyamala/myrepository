@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" th:attr="dir=${#locale.language}=='ar' ? 'rtl' : 'ltr'" >
+
+<head th:replace="fragments/header">
+</head>
+<body>
+	<div th:replace="fragments/staticmenu :: staticmenu"
+		class="container-fluid"></div>
+
+<div class="container">
+	<form class="form-horizontal um-search-form" role="form"
+		id="addupdateuserrole-search-form" th:object="${userSearchObj}"
+		method="post">
+		<div class="form-group up-form-group-half">
+			<label for="Login Name" th:attr="class= ${#locale.language}=='ar'? 'col-sm-2 control-label arabic' : 'col-sm-2 control-label'"  th:text="#{user.userName}">Login
+				Name</label> <input type="text" th:field="*{loginName}" class="form-control"
+				id="name" th:attr="placeholder=#{user.userName}" />
+		</div>
+		<div class="form-group up-form-group-half">
+			<label for="Mobile No" th:attr="class= ${#locale.language}=='ar'? 'col-sm-2 control-label arabic' : 'col-sm-2 control-label'"  th:text="#{user.mobileNo}">Mobile
+				# </label> <input type="text" th:field="*{mobileNo}" class="form-control"
+				id="mobileno" th:attr="placeholder=#{user.mobileNo}" />
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10"></div>
+		</div>
+		<div class="form-group">
+			<button type="button" class="um-search-btn btn btn-primary" th:attr="style=${#locale.language}=='ar'? 'float:left':''"
+				onclick="retrieveUserDetailsForAddUpdateUserRoleListView()" th:text="#{usermanagement.search}">Search</button>
+		</div>
+	</form>
+	<div id="addupdateuserrole-searchdata"
+		th:fragment="addupdateuserrole-searchdata-result-frag" style="float: left;width:100%">
+
+		<div id="addupdateuserrole-searchdata-result"
+			th:if="${not #lists.isEmpty(userObjList)}">
+			<div id="mytableid">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th th:text="#{user.userSearchResults}" style="font-size: 16px;" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'">
+									<strong>User Search Results</strong>
+							</th>
+							<th></th>
+						</tr>
+						<tr>
+								<th th:attr="class= ${#locale.language}=='ar'? 'bg-primary arabic':'bg-primary'"  style="font-size: 15px;" th:text="#{user.userId}"><strong>User ID</strong></th>
+								<th th:attr="class= ${#locale.language}=='ar'? 'bg-primary arabic':'bg-primary'"  style="font-size: 15px;" th:text="#{user.loginName}"><strong>User Login</strong></th>
+								<th th:attr="class= ${#locale.language}=='ar'? 'bg-primary arabic':'bg-primary'"  style="font-size: 15px;" th:text="#{user.emailAddress}"><strong>Email ID</strong></th>
+								<th class="bg-primary"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="userObj : ${userObjList}" th:object="${userObj}">
+							<td th:text="*{userId}">User ID</td>
+							<td th:text="*{userLogin}">User Login</td>
+							<td th:text="*{email}">Email ID</td>
+							<td class="text-right"><button type="button"
+									th:attr="value=${userObj.userId},id=${userObj.userId},style=${#locale.language}=='ar'? 'float:left':'float:right'"
+									class="btn btn-success"
+									onclick="retrieveRoleDetailsForAddUpdateRoleUserView(this.id)" th:text="#{user.modify}">Modify</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="linebreaker-lg"></div>
+		</div>
+
+
+		<div id="noResultDivParent" class="row" th:if="${ #lists.isEmpty(userObjList) and warnResponseDesc != null}" >
+			<div class="col-md-12" style="text-align: center;">
+				<div  id="noResultDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: yellow;">
+					 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					 <img src="img/warning.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+						<strong><span th:utext="${warnResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+						</span> </strong>
+				</div>
+			</div>
+		</div>
+		<div id="errorDivParent" class="row" th:if="${ #lists.isEmpty(userObjList) and errorResponseDesc != null}" >
+			<div class="col-md-12" style="text-align: center;">
+				<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+					 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+						<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+						</span> </strong>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div id="addupdateuserrole-populateroles"
+		th:fragment="addupdateuserrole-populateroles-result-frag">
+		<div id="addupdateuserrole-populate-completeroles-result"
+			th:if="${completeRoleList != null}" th:object="${completeRoleList}">
+
+			<div id="table-completeRoleList" >
+				<table class="table table-fixed ">
+					<thead>
+						<tr>
+							<th th:text="#{user.chooseaddroledesc}" style="font-size: 14px;" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'"><strong>
+							Click Assign Button to add a role </strong></th>							
+						</tr>
+						<tr>
+							<th th:attr="style=${#locale.language}=='ar'? 'float:right;width: 103%;font-size: 15px': 'float:left;width: 103%;font-size: 15px',
+							class=${#locale.language}=='ar'? 'bg-primary col-xs-2 text-right':'bg-primary col-xs-2 text-left'" th:text="#{user.availableroles}"><strong>Available
+									Roles </strong></th>							
+						</tr>
+					</thead>
+					<tbody >
+						<tr th:each="completeRole : ${completeRoleList}"
+							th:object="${completeRole}"
+							th:if="${not #lists.isEmpty(completeRoleList)}">
+							<td 
+									th:attr="class=${#locale.language}=='ar'? 'col-xs-11':'col-xs-11',style=${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4;width:100%':'border-left: 1px solid #cdd0d4;width:100%'"
+								th:text="*{roleName}">Role Name</td>
+							<td  class="col-xs-1"><button
+									type="button"
+									th:attr="value=${completeRole.roleId},id=${completeRole.roleId}"
+									class="btn btn-success"
+									onclick="modifyInMemoryRoleDetailsForSingleUpdate(this.id,'add')" th:text="#{user.assign}">Assign</button></td>
+						</tr>
+						<tr th:if="${not #lists.isEmpty(completeRoleList)}">
+						<td></td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(completeRoleList)}">
+							<td class="col-xs-12"><b>No Available Roles</b></td>
+						</tr>
+
+					</tbody>
+				</table>
+
+			</div>
+			<div class="linebreaker-lg"></div>
+		</div>
+
+
+		<div id="addupdateuserrole-populate-assignedroles-result" 
+			th:if="${userAssignedRolesList != null}"
+			th:object="${userAssignedRolesList}">
+			<div id="table-assignedRoleList">
+				<table class="table table-fixed ">
+					<thead>
+						<tr>
+							<th th:text="#{user.chooseremoveroledesc}" style="font-size: 14px;" th:attr="class= ${#locale.language}=='ar'? 'arabic' : 'english'"><strong>
+							Click Remove Button to delete a role </strong></th>							
+						</tr>
+						<tr>
+							<th th:attr="style=${#locale.language}=='ar'? 'float:right;width: 103%;font-size: 15px': 'float:left;width: 103%;font-size: 15px',
+							class=${#locale.language}=='ar'? 'bg-primary col-xs-2 text-right':'bg-primary col-xs-2 text-left'" th:text="#{user.assignederoles}"><strong>Assigned
+									Roles </strong></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="userAssignedRole : ${userAssignedRolesList}"
+							th:object="${userAssignedRole}"
+							th:if="${not #lists.isEmpty(userAssignedRolesList)}">
+							<td 
+							   th:attr="class=${#locale.language}=='ar'? 'col-xs-11':'col-xs-11',style=${#locale.language}=='ar'? 'border-right: 1px solid #cdd0d4;width:100%':'border-left: 1px solid #cdd0d4;width:100%'"
+								th:text="*{roleName}">Role Name</td>
+							<td class="col-xs-1"><button
+									type="button"
+									th:attr="value=${userAssignedRole.roleId},id=${userAssignedRole.roleId}"
+									class="btn btn-danger"
+									onclick="modifyInMemoryRoleDetailsForSingleUpdate(this.id,'remove')" th:text="#{user.remove}">Remove</button></td>
+						</tr>
+						<tr th:if="${not #lists.isEmpty(userAssignedRolesList)}">
+						<td></td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(userAssignedRolesList)}">
+							<td class="col-xs-12"><b>No Assigned Roles</b></td>
+						</tr>
+					</tbody>
+				</table>
+				<div></div>
+			</div>
+
+			<div class="linebreaker-md"></div>
+			<div class="linebreaker-md"></div>
+			
+			<div align="center">
+				<button type="button" class="btn btn-success"
+					onclick="modifyInMemoryRoleDetails('add')" th:text="#{user.assignall}">Assign All</button>
+				<button type="button" class="btn btn-danger"
+					onclick="modifyInMemoryRoleDetails('remove')" th:text="#{user.removeall}">Remove All</button>
+				<button type="button" class="btn btn-primary"
+					onclick="saveUserRoleChanges()" th:text="#{user.savechanges}" >Save Changes</button>
+			</div>
+			<div class="linebreaker-md"></div>
+			<div class="linebreaker-md"></div>
+		</div>
+		
+		<div id="noResultDivParent" class="row" th:if="${ #lists.isEmpty(userObjList) and warnResponseDesc != null}" >
+			<div class="col-md-12" style="text-align: center;">
+				<div  id="noResultDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: yellow;">
+					 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					 <img src="img/warning.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+						<strong><span th:utext="${warnResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+						</span> </strong>
+				</div>
+			</div>
+		</div>
+		<div id="errorDivParent" class="row" th:if="${ #lists.isEmpty(userObjList) and errorResponseDesc != null}" >
+			<div class="col-md-12" style="text-align: center;">
+				<div  id="errorDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: red;">
+					 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					 <img src="img/error.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>
+						<strong><span th:utext="${errorResponseDesc}" class="text-danger text-center" style="font-size: 15px" >No Result Found with the given Search Criteria
+						</span> </strong>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="addupdateuserrole-updatedata-result-status"
+		th:fragment="addupdateuserrole-updatedata-result-status-frag">
+		
+		<div id="updateUserSuccessDivPanel" class="row" th:if="${updateUserRoleStatus != null}" >
+			<div class="col-md-12" style="text-align: center;">
+				<div id="successDiv" class="alert alert-success alert-dismissable" style="background-color: white;border-color: green;">
+					 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					 <img src="img/success.jpg" height="60px" style="padding-right: 40px" alt="Smiley face" ></img>							
+					 <strong>
+					 <span class="text-success text-center" style="font-size: 15px" >User Roles Updated Successfully
+					 </span>
+					  </strong>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<div th:fragment="staticmenu">
+	<nav class="navbar navbar-custom um-header">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<h1 class="logo-panel">
+					<span class="header-logo"></span> User Management
+				</h1>
+			</div>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="um-profile">
+					<div id="welcome-messsage-div" th:if="${session.userName != null}">
+						<h3>
+							<span th:text="#{user.welcome}+','">Welcome,</span> <span th:utext="${session.userName}">User</span>
+						</h3>
+					</div>
+				</li>
+				<li class="um-logout"><a href="#" th:href="@{/initiateLogout}">
+						<span class="glyphicon glyphicon-log-out navbar-custom"></span>
+				</a></li>
+			</ul>
+		</div>
+	</nav>
+	<div id="TestID" class="page-header um-subheader">
+		<div class="container-fluid">
+			<div class="row" style="height: 75px;">
+				<div>
+					<ul class="nav nav-pills nav-justified" style="padding-top: 10px">
+						<li><a href="home" th:text="#{menu.home}">Home</a></li>
+						<li><a href="showusersearch" th:text="#{menu.viewuser}">View User</a></li>
+						<li><a href="showmanageuser" th:text="#{menu.manageuser}">Manage User</a></li>
+						<li><a href="addupdateuserrole" th:text="#{menu.addupdateuserrole}">Add/Update User Role</a></li>
+						<li><a href="roleprivilege" th:text="#{menu.roleprivilege}">Role Privilege</a></li>
+<!-- 						<li><a href="adminconsole" th:text="#{menu.adminconsole}">Admin Console</a></li> -->
+						<li><a href="viewlog" th:text="#{menu.viewlogs}">View Logs</a></li>
+						<li><a href="manageusergroupcriteria" th:text="#{menu.usergroupcriteria}">User Group Criteria</a></li>
+						<li><a href="manageroles" th:text="#{menu.manageuserrole}">Manage User Role</a></li>
+<!-- 					</ul>
+					<ul class="nav nav-pills nav-justified ">
+ -->					
+						<li><a href="manageusergroups" th:text="#{menu.manageusergroup}">Manage User Group</a></li>
+					    <li><a href="managerolegroups" th:text="#{menu.managerolegroup}">Manage Role Group</a></li>
+					</ul>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="divLoading"></div> 
+</div>
